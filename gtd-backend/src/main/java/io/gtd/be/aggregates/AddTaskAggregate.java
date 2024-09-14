@@ -17,7 +17,8 @@ public class AddTaskAggregate implements Aggregate<AddTaskCommand> {
     public void handle(AddTaskCommand addTaskCommand) {
 
         task = Task.builder()
-                .taskId(UUID.randomUUID().toString())
+                .id(UUID.randomUUID().toString())
+                .userId("UserID-001")
                 .title(addTaskCommand.title().title())
                 .context(addTaskCommand.context().context())
                 .details(addTaskCommand.details().details())

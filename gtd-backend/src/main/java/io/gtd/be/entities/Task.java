@@ -39,6 +39,7 @@ public class Task {
     private String context;
 
     @DynamoDBAttribute(attributeName = "dueDate")
+
     private String dueDate;
 
     @DynamoDBAttribute(attributeName = "createdAt")
