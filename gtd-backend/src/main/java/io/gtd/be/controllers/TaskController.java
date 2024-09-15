@@ -1,18 +1,18 @@
 package io.gtd.be.controllers;
 
 import io.gtd.be.commands.AddTaskCommandHandler;
+import io.gtd.be.domain.models.NewTask;
 import io.gtd.be.domain.models.Task;
 import io.gtd.be.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("/tasks")
 public class TaskController {
@@ -26,7 +26,7 @@ public class TaskController {
     }
 
     @PostMapping(path = "/v1")
-    public ResponseEntity<String> addTask(@Valid @RequestBody Task task) {
+    public ResponseEntity<String> addTask(@Valid @RequestBody NewTask task) {
         log.info("Adding task: {}", task.title());
         addTaskCommandHandler.handle(task.addTaskCommand());
         return ResponseEntity.status(HttpStatus.CREATED).body("Task added successfully");
@@ -36,4 +36,6 @@ public class TaskController {
     public ResponseEntity<List<Task>> getAllTasks(@PathVariable String userId) {
         return ResponseEntity.ok(this.taskService.getTasks(userId));
     }
+
+
 }

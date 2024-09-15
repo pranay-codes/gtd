@@ -1,5 +1,6 @@
 package io.gtd.be.service;
 
+import io.gtd.be.domain.models.NewTask;
 import io.gtd.be.domain.models.Task;
 
 import java.util.List;

@@ -2,7 +2,12 @@ package io.gtd.be.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.gtd.be.domain.commands.AddTaskCommand;
-import io.gtd.be.domain.values.task.*;
+import io.gtd.be.domain.values.task.Context;
+import io.gtd.be.domain.values.task.Details;
+import io.gtd.be.domain.values.task.DueDate;
+import io.gtd.be.domain.values.task.Priority;
+import io.gtd.be.domain.values.task.Status;
+import io.gtd.be.domain.values.task.Title;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,10 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-public record Task(
-
-        String id,
-
+public record NewTask(
         @NotBlank(message = "Title cannot be blank")
         @Size(min = 3, max = 64)
         String title,
