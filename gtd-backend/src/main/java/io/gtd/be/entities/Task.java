@@ -19,7 +19,7 @@ public class Task {
     @DynamoDBAttribute(attributeName = "id")
     private String id;
 
-
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "userId-index")
     @DynamoDBAttribute(attributeName = "userId")
     private String userId;
 
@@ -39,7 +39,6 @@ public class Task {
     private String context;
 
     @DynamoDBAttribute(attributeName = "dueDate")
-
     private String dueDate;
 
     @DynamoDBAttribute(attributeName = "createdAt")
