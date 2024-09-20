@@ -40,11 +40,6 @@ jobs:
         run: |
           sudo apt-get install maven -y
 
-      # Step 6: change directory to infrastrusture project
-      - name: Change Directory
-        run: |
-          cd infrastructure
-
       # Step 6: Build the CDK app using Maven
       - name: Build CDK app
         run: mvn clean install
