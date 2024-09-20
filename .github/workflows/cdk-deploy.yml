@@ -46,10 +46,13 @@ jobs:
 
       # Step 6: Build the CDK app using Maven
       - name: Build CDK app
-        run: mvn clean install
+        run: |
+          cd infrastructure
+          mvn clean install
 
       # Step 7: Deploy CDK using AWS CLI
       - name: Deploy CDK stack
         run: |
+          cd infrastructure
           npx cdk synth
           npx cdk deploy --require-approval never
