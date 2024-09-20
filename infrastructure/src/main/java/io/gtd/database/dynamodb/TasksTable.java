@@ -37,18 +37,9 @@ public final class TasksTable implements DynamoDBTable {
             .build();
 
         // Adding Global Secondary Indexes (GSIs)
-        tasksTable.addGlobalSecondaryIndex(GlobalSecondaryIndexProps.builder()
-            .indexName("gsi_dueDate")
-            .partitionKey(Attribute.builder()
-                .name("id")
-                .type(AttributeType.STRING)
-                .build())
-            .sortKey(Attribute.builder()
-                .name("dueDate")
-                .type(AttributeType.STRING)
-                .build())
 
-            .build());
+        tasksTable.addGlobalSecondaryIndex(DynamoDBCore
+                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_dueDate", "id", "dueDate")));
 
         tasksTable.addGlobalSecondaryIndex(DynamoDBCore
                 .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_context", "id", "context")));
