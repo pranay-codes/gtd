@@ -1,5 +1,7 @@
 package io.gtd.database.dynamodb;
 
+import io.gtd.core.DynamoDBCore;
+import io.gtd.model.database.GlobalSecondaryIndex;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.dynamodb.*;
 
@@ -26,16 +28,9 @@ public final class UserTable implements DynamoDBTable {
             .build();
 
         // Adding Global Secondary Index (GSI) for Email
-        usersTable.addGlobalSecondaryIndex(GlobalSecondaryIndexProps.builder()
-            .indexName("gsi_users_email")
-            .partitionKey(Attribute.builder()
-                .name("email")
-                .type(AttributeType.STRING)
-                .build())
-            .sortKey(Attribute.builder()
-                .name("userId")
-                .type(AttributeType.STRING)
-                .build())
-            .build());
+        usersTable.addGlobalSecondaryIndex(
+                DynamoDBCore.buildGlobalSecondaryIndex(
+                        new GlobalSecondaryIndex("gsi_users_email", "email", "userId")
+                ));
     }
 }
