@@ -1,0 +1,56 @@
+name: CDK Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up JDK 17 (or your version)
+      - name: Set up Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+
+      # Step 3: Install AWS CLI
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install awscli -y
+
+      # Step 4: Set up AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Step 5: Install Maven
+      - name: Set up Maven
+        run: |
+          sudo apt-get install maven -y
+
+      # Step 6: change directory to infrastrusture project
+      - name: Change Directory
+        run: |
+          cd infrastructure
+
+      # Step 6: Build the CDK app using Maven
+      - name: Build CDK app
+        run: mvn clean install
+
+      # Step 7: Deploy CDK using AWS CLI
+      - name: Deploy CDK stack
+        run: |
+          npx cdk synth
+          npx cdk deploy --require-approval never
