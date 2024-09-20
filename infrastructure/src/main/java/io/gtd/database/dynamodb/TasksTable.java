@@ -36,8 +36,9 @@ public final class TasksTable implements DynamoDBTable {
             .pointInTimeRecovery(true)
             .build();
 
-        // Adding Global Secondary Indexes (GSIs)
 
+
+        // Adding Global Secondary Indexes (GSIs)
         tasksTable.addGlobalSecondaryIndex(DynamoDBCore
                 .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_dueDate", "id", "dueDate")));
 

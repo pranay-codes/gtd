@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'infrastructure/**'
+      - 'infrastructure/pom.xml'
+
 
 jobs:
   deploy:
@@ -40,17 +44,15 @@ jobs:
         run: |
           sudo apt-get install maven -y
 
-      # Step 6: change directory to infrastrusture project
-      - name: Change Directory
-        run: |
-          cd infrastructure
-
       # Step 6: Build the CDK app using Maven
       - name: Build CDK app
-        run: mvn clean install
+        run: |
+          cd infrastructure
+          mvn clean install
 
       # Step 7: Deploy CDK using AWS CLI
       - name: Deploy CDK stack
         run: |
+          cd infrastructure
           npx cdk synth
           npx cdk deploy --require-approval never
