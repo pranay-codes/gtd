@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'infrastructure/**'
+      - 'infrastructure/pom.xml'
 
 
 jobs:
