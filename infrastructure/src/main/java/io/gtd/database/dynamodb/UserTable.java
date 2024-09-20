@@ -3,7 +3,7 @@ package io.gtd.database.dynamodb;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.dynamodb.*;
 
-public class UserTable implements DynamoDBTable {
+public final class UserTable implements DynamoDBTable {
 
     private final Stack stack;
     

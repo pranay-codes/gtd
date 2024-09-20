@@ -8,7 +8,7 @@ import software.amazon.awscdk.services.dynamodb.GlobalSecondaryIndexProps;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.dynamodb.TableEncryption;
 
-public class ProjectsTable implements DynamoDBTable {
+public final class ProjectsTable implements DynamoDBTable {
     
     private final Stack stack;
 

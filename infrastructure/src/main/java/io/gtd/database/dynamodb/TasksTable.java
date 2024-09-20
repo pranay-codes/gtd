@@ -1,5 +1,7 @@
 package io.gtd.database.dynamodb;
 
+import io.gtd.core.DynamoDBCore;
+import io.gtd.model.database.GlobalSecondaryIndex;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.dynamodb.Attribute;
 import software.amazon.awscdk.services.dynamodb.AttributeType;
@@ -8,7 +10,7 @@ import software.amazon.awscdk.services.dynamodb.GlobalSecondaryIndexProps;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.dynamodb.TableEncryption;
 
-public class TasksTable implements DynamoDBTable {
+public final class TasksTable implements DynamoDBTable {
 
     private final Stack stack;
 
@@ -59,6 +61,10 @@ public class TasksTable implements DynamoDBTable {
                 .type(AttributeType.STRING)
                 .build())
             .build());
+
+        tasksTable.addGlobalSecondaryIndex(DynamoDBCore
+                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_userid_context", "userId", "context")));
+
 
     }
     

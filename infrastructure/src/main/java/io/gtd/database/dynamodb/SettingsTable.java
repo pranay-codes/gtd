@@ -7,7 +7,7 @@ import software.amazon.awscdk.services.dynamodb.BillingMode;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.dynamodb.TableEncryption;
 
-public class SettingsTable implements DynamoDBTable {
+public final class SettingsTable implements DynamoDBTable {
     
     private final Stack stack;
 

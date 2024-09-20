@@ -1,6 +1,7 @@
 package io.gtd;
 
 import software.amazon.awscdk.App;
+import software.amazon.awscdk.Environment;
 import software.amazon.awscdk.StackProps;
 
 import io.gtd.database.dynamodb.GettingThingsDoneDBStack;
@@ -10,6 +11,10 @@ public class InfrastructureApp {
 
         App app = new App();
         StackProps props = StackProps.builder()
+                .env(Environment.builder()
+                        .region("ap-southeast-2")
+                        .account("211125779992")
+                        .build())
                 .stackName("gtd-db")
                 .build();
         new GettingThingsDoneDBStack(app, "gtd-db", props);

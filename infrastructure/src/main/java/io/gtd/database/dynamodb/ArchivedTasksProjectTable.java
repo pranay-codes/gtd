@@ -7,7 +7,7 @@ import software.amazon.awscdk.services.dynamodb.BillingMode;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.dynamodb.TableEncryption;
 
-public class ArchivedTasksProjectTable implements DynamoDBTable {
+public final class ArchivedTasksProjectTable implements DynamoDBTable {
 
     private final Stack stack;
 

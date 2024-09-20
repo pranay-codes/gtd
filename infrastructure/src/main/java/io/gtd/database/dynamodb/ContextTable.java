@@ -7,7 +7,7 @@ import software.amazon.awscdk.services.dynamodb.BillingMode;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.dynamodb.TableEncryption;
 
-public class ContextTable implements DynamoDBTable {
+public final class ContextTable implements DynamoDBTable {
     
     private final Stack stack;
 
