@@ -18,11 +18,9 @@ import java.util.Map;
 @Repository
 public class DynamoDBTaskRespository implements TaskRepository {
 
-    private final AmazonDynamoDB amazonDynamoDB;
     private final DynamoDBMapper dynamoDBMapper;
 
     public DynamoDBTaskRespository(AmazonDynamoDB amazonDynamoDB) {
-        this.amazonDynamoDB = amazonDynamoDB;
         this.dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
     }
 
@@ -42,8 +40,7 @@ public class DynamoDBTaskRespository implements TaskRepository {
                 .withConsistentRead(false)
                 .withHashKeyValues(taskKey);
 
-        List<Task> tasks = dynamoDBMapper.query(Task.class, queryExpression);
+        return dynamoDBMapper.query(Task.class, queryExpression);
 
-        return tasks;
     }
 }

@@ -1,6 +1,6 @@
 package io.gtd.be.commands;
 
-public interface CommandHandler <T> {
+public sealed interface CommandHandler <T> permits AddTaskCommandHandler {
     
     void handle(T t);
 }

@@ -16,6 +16,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 
 public record NewTask(
+
+        @NotBlank(message = "userid required")
+        String userId,
+
         @NotBlank(message = "Title cannot be blank")
         @Size(min = 3, max = 64)
         String title,
@@ -29,7 +33,7 @@ public record NewTask(
 
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        @FutureOrPresent(message = "Due date must be in the future")
+        @FutureOrPresent(message = "Due date must be in the future or present")
         LocalDateTime dueDate,
 
         @NotBlank(message = "Status cannot be blank")
@@ -37,6 +41,7 @@ public record NewTask(
     
     public AddTaskCommand addTaskCommand() {
         return AddTaskCommand.builder()
+
             .title(new Title(title))
             .details(new Details(details))
             .priority(new Priority(priority))

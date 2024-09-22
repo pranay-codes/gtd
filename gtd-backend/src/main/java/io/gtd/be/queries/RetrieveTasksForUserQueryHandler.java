@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class RetrieveTasksForUserQueryHandler implements QueryHandler<UserId, List<Task>> {
+public final class RetrieveTasksForUserQueryHandler implements QueryHandler<UserId, List<Task>> {
 
     private final TaskRepository repository;
 
