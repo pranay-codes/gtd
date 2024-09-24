@@ -1,13 +1,17 @@
 package io.gtd.be.commands;
 
 import io.gtd.be.domain.commands.AddTaskCommand;
+import io.gtd.be.domain.values.task.TaskId;
+import io.gtd.be.entities.Task;
 import io.gtd.be.infrastructure.AggregateFactoryRegistry;
 import io.gtd.be.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class AddTaskCommandHandler implements CommandHandler<AddTaskCommand> {
+@Qualifier("addTaskCommandHandler")
+public final class AddTaskCommandHandler implements CommandHandler<AddTaskCommand, TaskId> {
 
     private final TaskRepository taskRepository;
     private final AggregateFactoryRegistry factoryRegistry;
@@ -19,10 +23,9 @@ public final class AddTaskCommandHandler implements CommandHandler<AddTaskComman
     }
 
     @Override
-    public void handle(AddTaskCommand addTask) {
-
-        taskRepository.save(addTask.toEntity());
-
+    public TaskId handle(AddTaskCommand addTask) {
+        Task newTask = taskRepository.save(addTask.toEntity());
+        return new TaskId(newTask.getId());
     }
     
 }
