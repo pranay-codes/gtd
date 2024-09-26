@@ -4,7 +4,7 @@ import io.gtd.be.domain.models.Task;
 
 import java.util.List;
 
-public sealed interface TaskQueryService permits TaskOrchestrationQueryService {
+public sealed interface TaskQueryService permits TaskQueryServiceImpl {
     List<Task> getTasks(String userId);
 
 }

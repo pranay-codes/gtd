@@ -18,7 +18,7 @@ public final class UpdateTaskStatusCommandHandler implements CommandHandler<Upda
 
     @Override
     public TaskId handle(UpdateTaskCommand updateTaskCommand) {
-        taskRepository.save(updateTaskCommand.toEntity());
+        taskRepository.updateTask(updateTaskCommand.task().updateStatus(updateTaskCommand.newStatus()));
         return null;
     }
 }

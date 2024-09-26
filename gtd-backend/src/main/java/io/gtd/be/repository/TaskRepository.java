@@ -14,4 +14,6 @@ public interface TaskRepository {
     List<Task> retrieveAllForUserId(UserId userId);
 
     Optional<Task> retrieveById(TaskId taskId);
+
+    TaskId updateTask(Task task);
 }

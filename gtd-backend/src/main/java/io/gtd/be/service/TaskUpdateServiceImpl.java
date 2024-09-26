@@ -33,16 +33,7 @@ public final class TaskUpdateServiceImpl implements  TaskUpdateService{
         if (task.isPresent()) {
             System.out.println("Task present - " + task.get().getTitle());
 
-            UpdateTaskCommand updateTaskCommand = new UpdateTaskCommand(new UserId(task.get().getUserId()),
-                    new TaskId(task.get().getId()),
-                    new Title(task.get().getId()),
-                    new Details(task.get().getDetails()),
-                    new Context(task.get().getContext()),
-                    new DueDate(task.get().getDueDate()),
-                    new Priority(task.get().getPriority()),
-                    new Status(task.get().getStatus()),
-                    new CreatedAt(task.get().getCreatedAt()));
-//            UpdateTaskCommand updateTaskCommand = task.updateTaskCommand(new Status("COMPLETE"));
+            UpdateTaskCommand updateTaskCommand = new UpdateTaskCommand(task.get(), "COMPLETE");
             commandHandler.handle(updateTaskCommand);
         }
         // update task as done

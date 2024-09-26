@@ -47,17 +47,4 @@ public record Task(
             .build();
     }
 
-    public UpdateTaskCommand updateTaskCommand(Status newStatus) {
-        return UpdateTaskCommand.builder()
-                .taskId(new TaskId(id))
-                .title(new Title(title))
-                .details(new Details(details))
-                .priority(new Priority(priority))
-                .userId(new UserId("UserID"))
-                .context(new Context(context))
-                .dueDate(new DueDate(dueDate.toString()))
-                .createdAt(new CreatedAt(Instant.now().toString()))
-                .status(newStatus)
-                .build();
-    }
 }

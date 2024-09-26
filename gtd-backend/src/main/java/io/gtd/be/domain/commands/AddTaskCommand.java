@@ -26,6 +26,7 @@ public record AddTaskCommand(UserId userId, Title title, Details details, Priori
                 .priority(this.priority().priority())
                 .status(this.status().status())
                 .createdAt(Instant.now().toString())
+                .updatedAt(Instant.now().toString())
                 .build();
     }
 }

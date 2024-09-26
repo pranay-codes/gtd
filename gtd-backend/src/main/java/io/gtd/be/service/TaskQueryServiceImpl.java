@@ -1,21 +1,18 @@
 package io.gtd.be.service;
 
 import io.gtd.be.domain.models.Task;
-import io.gtd.be.domain.values.task.TaskId;
 import io.gtd.be.domain.values.task.UserId;
-import io.gtd.be.queries.RetrieveTaskForTaskIdQueryHandler;
 import io.gtd.be.queries.RetrieveTasksForUserQueryHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public final class TaskOrchestrationQueryService implements TaskQueryService {
+public final class TaskQueryServiceImpl implements TaskQueryService {
 
     private final RetrieveTasksForUserQueryHandler retrieveTasksForUserQueryHandler;
 
-    public TaskOrchestrationQueryService(RetrieveTasksForUserQueryHandler retrieveTasksForUserQueryHandler) {
+    public TaskQueryServiceImpl(RetrieveTasksForUserQueryHandler retrieveTasksForUserQueryHandler) {
         this.retrieveTasksForUserQueryHandler = retrieveTasksForUserQueryHandler;
     }
 

@@ -24,3 +24,5 @@ public final class RetrieveTaskForTaskIdQueryHandler implements QueryHandler<Tas
         return repository.retrieveById(taskId);
     }
 }
+
+
