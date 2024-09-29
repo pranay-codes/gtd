@@ -10,6 +10,8 @@ import software.amazon.awscdk.services.dynamodb.GlobalSecondaryIndexProps;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.dynamodb.TableEncryption;
 
+import java.util.Optional;
+
 public final class TasksTable implements DynamoDBTable {
 
     private final Stack stack;
@@ -36,13 +38,16 @@ public final class TasksTable implements DynamoDBTable {
 
         // Adding Global Secondary Indexes (GSIs)
         tasksTable.addGlobalSecondaryIndex(DynamoDBCore
-                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_dueDate", "id", "dueDate")));
+                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_dueDate", "id", Optional.of("dueDate"))));
 
         tasksTable.addGlobalSecondaryIndex(DynamoDBCore
-                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_context", "id", "context")));
+                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_context", "id", Optional.of("context"))));
 
         tasksTable.addGlobalSecondaryIndex(DynamoDBCore
-                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_userid_context", "userId", "context")));
+                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("gsi_userid_context", "userId", Optional.of("context"))));
+
+        tasksTable.addGlobalSecondaryIndex(DynamoDBCore
+                .buildGlobalSecondaryIndex(new GlobalSecondaryIndex("userId-index", "userId")));
 
 
     }
