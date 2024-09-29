@@ -27,7 +27,7 @@ public record AddTaskRequest (
         String priority,
 
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
         @FutureOrPresent(message = "Due date must be in the future or present")
         LocalDateTime dueDate,
 
