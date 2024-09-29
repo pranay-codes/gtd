@@ -2,8 +2,11 @@ package io.gtd.database.dynamodb;
 
 import io.gtd.core.DynamoDBCore;
 import io.gtd.model.database.GlobalSecondaryIndex;
+import io.gtd.model.database.TableBuilder;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.dynamodb.*;
+
+import java.util.Optional;
 
 public final class UserTable implements DynamoDBTable {
 
@@ -14,23 +17,15 @@ public final class UserTable implements DynamoDBTable {
     }
 
     public void create() {
-        
-        // Users Table
-        Table usersTable = Table.Builder.create(stack, "UsersTable")
-            .tableName("Users")
-            .partitionKey(Attribute.builder()
-                .name("userId")
-                .type(AttributeType.STRING)
-                .build())
-            .billingMode(BillingMode.PAY_PER_REQUEST)
-            .encryption(TableEncryption.AWS_MANAGED)
-            .pointInTimeRecovery(true)
-            .build();
+
+        Table usersTable = DynamoDBCore.buildTable(Table.Builder
+                        .create(stack, "UsersTable"),
+                new TableBuilder("Users", "userId"));
 
         // Adding Global Secondary Index (GSI) for Email
         usersTable.addGlobalSecondaryIndex(
                 DynamoDBCore.buildGlobalSecondaryIndex(
-                        new GlobalSecondaryIndex("gsi_users_email", "email", "userId")
+                        new GlobalSecondaryIndex("gsi_users_email", "email", Optional.of("userId"))
                 ));
     }
 }

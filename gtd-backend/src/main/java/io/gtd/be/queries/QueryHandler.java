@@ -1,6 +1,6 @@
 package io.gtd.be.queries;
 
-public interface QueryHandler <T, R> {
+public sealed interface QueryHandler <T, R> permits RetrieveTasksForUserQueryHandler, RetrieveTaskForTaskIdQueryHandler {
 
     R handle(T t);
 

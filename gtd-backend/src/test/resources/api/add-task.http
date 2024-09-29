@@ -2,9 +2,10 @@ POST http://localhost:8080/tasks/v1 HTTP/1.1
 content-type: application/json
 
 {
-    "title": "clean garage",
-    "details": "Move the table to clean the garage",
-    "context": "Chores",
+    "title": "call John to book holiday care",
+  "userId": "userID-001",
+    "details": "Reeya needs to go for holiday care",
+    "context": "Reeya",
     "priority": "HIGH",
     "dueDate": "2024-10-14T10:17:13",
     "status": "OPEN"
