@@ -1,11 +1,33 @@
 package io.gtd.core;
 
+import io.gtd.model.database.TableBuilder;
 import io.gtd.model.database.GlobalSecondaryIndex;
-import software.amazon.awscdk.services.dynamodb.Attribute;
-import software.amazon.awscdk.services.dynamodb.AttributeType;
-import software.amazon.awscdk.services.dynamodb.GlobalSecondaryIndexProps;
+import software.amazon.awscdk.services.dynamodb.*;
 
 public class DynamoDBCore {
+
+    public static Table buildTable(Table.Builder table, TableBuilder tableBuilder) {
+
+        table = table
+                .tableName(tableBuilder.tableName())
+                .partitionKey(Attribute.builder()
+                        .name(tableBuilder.partitionKey())
+                        .type(AttributeType.STRING)
+                        .build());
+
+        if (tableBuilder.sortKey().isPresent()) {
+            table.sortKey(Attribute.builder()
+                    .name(tableBuilder.sortKey().get())
+                    .type(AttributeType.STRING)
+                    .build());
+        }
+
+        table.billingMode(BillingMode.PROVISIONED)
+                .encryption(TableEncryption.AWS_MANAGED)
+                .pointInTimeRecovery(true);
+
+        return table.build();
+    }
 
     public static GlobalSecondaryIndexProps buildGlobalSecondaryIndex(GlobalSecondaryIndex globalSecondaryIndex) {
         GlobalSecondaryIndexProps.Builder globalSecondaryIndexPropsBuilder = GlobalSecondaryIndexProps.builder()

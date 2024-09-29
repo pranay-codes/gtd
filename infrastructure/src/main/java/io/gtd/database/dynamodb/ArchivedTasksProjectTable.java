@@ -1,11 +1,15 @@
 package io.gtd.database.dynamodb;
 
+import io.gtd.core.DynamoDBCore;
+import io.gtd.model.database.TableBuilder;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.dynamodb.Attribute;
 import software.amazon.awscdk.services.dynamodb.AttributeType;
 import software.amazon.awscdk.services.dynamodb.BillingMode;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.dynamodb.TableEncryption;
+
+import java.util.Optional;
 
 public final class ArchivedTasksProjectTable implements DynamoDBTable {
 
@@ -16,22 +20,9 @@ public final class ArchivedTasksProjectTable implements DynamoDBTable {
     }
 
     public void create() {
-        Table archivedTasksProjectsTable = Table.Builder.create(stack, "ArchivedTasksProjectsTable")
-            .tableName("ArchivedTasksProjects")
-            .partitionKey(Attribute.builder()
-                .name("userId")
-                .type(AttributeType.STRING)
-                .build())
-            .sortKey(Attribute.builder()
-                .name("archivedItemId")
-                .type(AttributeType.STRING)
-                .build())
-            .billingMode(BillingMode.PAY_PER_REQUEST)
-            .encryption(TableEncryption.AWS_MANAGED)
-            .pointInTimeRecovery(true)
-            .build();
-
-
+        Table archivedTasksProjectsTable = DynamoDBCore.buildTable(
+                Table.Builder.create(stack, "ArchivedTasksProjectsTable"),
+                new TableBuilder("ArchivedTasksProjects", "userId", Optional.of("archivedItemId")));
     }
     
 }

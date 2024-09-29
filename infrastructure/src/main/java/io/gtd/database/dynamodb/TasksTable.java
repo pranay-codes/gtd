@@ -2,6 +2,7 @@ package io.gtd.database.dynamodb;
 
 import io.gtd.core.DynamoDBCore;
 import io.gtd.model.database.GlobalSecondaryIndex;
+import io.gtd.model.database.TableBuilder;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.services.dynamodb.Attribute;
 import software.amazon.awscdk.services.dynamodb.AttributeType;
@@ -23,18 +24,9 @@ public final class TasksTable implements DynamoDBTable {
 
     public void create() {
         // Tasks Table
-        Table tasksTable = Table.Builder.create(stack, "TasksTable")
-            .tableName("Tasks")
-            .partitionKey(Attribute.builder()
-                .name("id")
-                .type(AttributeType.STRING)
-                .build())
-            .billingMode(BillingMode.PROVISIONED)
-            .encryption(TableEncryption.AWS_MANAGED)
-            .pointInTimeRecovery(true)
-            .build();
-
-
+        Table tasksTable = DynamoDBCore.buildTable(Table.Builder
+                .create(stack, "TasksTable"),
+                new TableBuilder("Tasks", "id"));
 
         // Adding Global Secondary Indexes (GSIs)
         tasksTable.addGlobalSecondaryIndex(DynamoDBCore
