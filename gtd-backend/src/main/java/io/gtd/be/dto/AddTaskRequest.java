@@ -16,13 +16,14 @@ public record AddTaskRequest (
         String userId,
 
         @NotBlank(message = "Title cannot be blank")
-        @Size(min = 3, max = 64)
+        @Size(min = 3, max = 64, message = "Title length invalid")
         String title,
 
         String details,
 
         @NotBlank(message = "Context cannot be blank")
         String context,
+
 
         String priority,
 

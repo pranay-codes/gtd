@@ -10,6 +10,11 @@ content-type: application/json
     "dueDate": "2024-10-14T10:17",
     "status": "OPEN"
 }
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
 
 ###
 ## Title is blank or empty
@@ -18,15 +23,50 @@ POST http://localhost:8080/tasks/v1 HTTP/1.1
 content-type: application/json
 
 {
+  "userId": "userID-001",
 
   "details": "Wed, 21 Oct 2015 18:27:50 GMT",
   "context": "Home",
   "priority": "priority",
-  "dueDate": "date",
+  "dueDate": "2024-10-14T10:17",
+  "status": "OPEN"
+}
+
+
+
+###
+## Title and userId is blank or empty
+
+POST http://localhost:8080/tasks/v1 HTTP/1.1
+content-type: application/json
+
+{
+  "details": "Wed, 21 Oct 2015 18:27:50 GMT",
+  "context": "Home",
+  "priority": "priority",
+  "dueDate": "2024-10-14T10:17",
   "status": "OPEN"
 }
 
 ###
+## invalid title length
+
+POST http://localhost:8080/tasks/v1 HTTP/1.1
+content-type: application/json
+
+{
+  "title": "ca",
+  "userId": "userID-001",
+  "details": "Reeya needs to go for holiday care",
+  "context": "Reeya",
+  "priority": "HIGH",
+  "dueDate": "2024-10-14T10:17",
+  "status": "OPEN"
+}
+
+
+###
+## invalid date format
 
 POST http://localhost:8080/tasks/v1 HTTP/1.1
 content-type: application/json
