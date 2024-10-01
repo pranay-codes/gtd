@@ -23,7 +23,7 @@ public class AddTaskAggregate implements Aggregate<AddTaskCommand> {
                 .context(addTaskCommand.context().context())
                 .details(addTaskCommand.details().details())
                 .dueDate(addTaskCommand.dueDate().dueDate())
-                .priority(addTaskCommand.priority().priority())
+//                .priority(addTaskCommand.priority().priority())
                 .status(addTaskCommand.status().status())
                 .createdAt(Instant.now().toString())
                 .updatedAt(Instant.now().toString())
