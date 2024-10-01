@@ -23,7 +23,7 @@ public record AddTaskCommand(UserId userId, Title title, Details details, Priori
                 .context(this.context().context())
                 .details(this.details().details())
                 .dueDate(this.dueDate().dueDate())
-                .priority(this.priority().priority())
+                .priority(this.priority().priority().toString())
                 .status(this.status().status())
                 .createdAt(Instant.now().toString())
                 .updatedAt(Instant.now().toString())
