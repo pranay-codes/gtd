@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -71,6 +72,8 @@ public class TaskControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.taskId").value(mockId.id()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("SUCCESS"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("New task successfully added"));
+
+        verify(addTaskCommandHandler).handle(any(AddTaskCommand.class));
 
 
     }
@@ -122,5 +125,7 @@ public class TaskControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/tasks/v1/{userId}", userId)
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(JsonUtil.toJson(mockTaskList)));
+
+        verify(taskQueryService).getTasks(userId);
     }
 }
