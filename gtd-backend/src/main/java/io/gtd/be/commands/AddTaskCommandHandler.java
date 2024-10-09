@@ -14,12 +14,10 @@ import org.springframework.stereotype.Component;
 public final class AddTaskCommandHandler implements CommandHandler<AddTaskCommand, TaskId> {
 
     private final TaskRepository taskRepository;
-    private final AggregateFactoryRegistry factoryRegistry;
 
     @Autowired
-    public AddTaskCommandHandler(TaskRepository taskRepository, AggregateFactoryRegistry factoryRegistry) {
+    public AddTaskCommandHandler(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.factoryRegistry = factoryRegistry;
     }
 
     @Override

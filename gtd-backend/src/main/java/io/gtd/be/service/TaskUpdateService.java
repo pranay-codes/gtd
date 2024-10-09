@@ -1,6 +1,8 @@
 package io.gtd.be.service;
 
-public sealed  interface TaskUpdateService permits TaskUpdateServiceImpl {
+import io.gtd.be.errorHandling.exception.TaskNotFoundException;
 
-    String markTaskAsComplete(String taskId);
+public interface TaskUpdateService {
+
+    String markTaskAsComplete(String taskId) throws TaskNotFoundException;
 }

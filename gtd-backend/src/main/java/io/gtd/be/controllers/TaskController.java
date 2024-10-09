@@ -5,6 +5,7 @@ import io.gtd.be.domain.models.Task;
 import io.gtd.be.domain.values.task.TaskId;
 import io.gtd.be.dto.AddTaskRequest;
 import io.gtd.be.dto.AddTaskResponse;
+import io.gtd.be.errorHandling.exception.TaskNotFoundException;
 import io.gtd.be.service.TaskQueryService;
 import io.gtd.be.service.TaskUpdateService;
 import jakarta.validation.Valid;
@@ -24,7 +25,9 @@ public class TaskController {
     private final TaskUpdateService taskUpdateService;
     private final TaskQueryService taskQueryService;
 
-    public TaskController(AddTaskCommandHandler addTaskCommandHandler, TaskQueryService taskQueryService, TaskUpdateService taskUpdateService) {
+    public TaskController(AddTaskCommandHandler addTaskCommandHandler,
+                          TaskQueryService taskQueryService,
+                          TaskUpdateService taskUpdateService) {
         this.addTaskCommandHandler = addTaskCommandHandler;
         this.taskQueryService = taskQueryService;
         this.taskUpdateService = taskUpdateService;
@@ -34,7 +37,7 @@ public class TaskController {
     public ResponseEntity<AddTaskResponse> addTask(@Valid @RequestBody AddTaskRequest task) {
         log.info("Adding task: {}", task.title());
         TaskId taskId = addTaskCommandHandler.handle(task.addTaskCommand());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AddTaskResponse(taskId.id(), "SUCCESSFULL", "New task successfully added."));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AddTaskResponse(taskId.id(), "SUCCESS", "New task successfully added"));
     }
 
     @GetMapping(path = "/v1/{userId}")
@@ -43,10 +46,10 @@ public class TaskController {
     }
 
     @PutMapping(path = "/v1/complete/{taskId}")
-    public ResponseEntity<String> completeTask(@PathVariable String taskId) {
+    public ResponseEntity<String> completeTask(@PathVariable String taskId) throws TaskNotFoundException {
         log.info("complete task: {}", taskId);
-
         return ResponseEntity.ok(taskUpdateService.markTaskAsComplete(taskId));
+
     }
 
 
