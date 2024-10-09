@@ -1,5 +1,6 @@
 package io.gtd.be.errorHandling;
 
+import io.gtd.be.errorHandling.exception.TaskNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -37,5 +39,14 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
         var apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), List.of(error));
         return handleExceptionInternal(ex, apiError, headers, apiError.status(), request);
+    }
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    protected ResponseEntity<Object> handleTaskNotFound(TaskNotFoundException ex, WebRequest request) {
+        logger.info(ex.getClass().getName());
+
+        var error = ex.getLocalizedMessage();
+        var apiError = new ApiError(HttpStatus.NOT_FOUND, error, List.of(error));
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.status());
     }
 }

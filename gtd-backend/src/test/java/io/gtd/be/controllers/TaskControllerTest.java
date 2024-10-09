@@ -5,15 +5,11 @@ import io.gtd.be.domain.commands.AddTaskCommand;
 import io.gtd.be.domain.enums.Priorities;
 import io.gtd.be.domain.models.Task;
 import io.gtd.be.domain.values.task.TaskId;
-import io.gtd.be.dto.AddTaskRequest;
+import io.gtd.be.errorHandling.exception.TaskNotFoundException;
 import io.gtd.be.service.TaskQueryService;
-import io.gtd.be.service.TaskQueryServiceImpl;
 import io.gtd.be.service.TaskUpdateService;
 import io.gtd.be.utils.JsonUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,10 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +41,9 @@ public class TaskControllerTest {
 
     @MockBean
     private TaskQueryService taskQueryService;
+
+    @MockBean
+    private TaskUpdateService taskUpdateService;
 
 
     @Test
@@ -128,4 +126,45 @@ public class TaskControllerTest {
 
         verify(taskQueryService).getTasks(userId);
     }
+
+    @Test
+    public void givenValidUserId_whenTaskQeuryReturnsEmptyList_thenReturnEmptyTaskList() throws Exception {
+        String userId = "user123";
+        when(taskQueryService.getTasks(userId)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/tasks/v1/{userId}", userId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    public void givenValidTaskId_whenMarkTaskAsComplete_thenReturnTaskMarkedAsComplete() throws Exception {
+        String taskId = "task123";
+        String expectedResponse = "Task marked as complete";
+
+        // Mocking the service response
+        when(taskUpdateService.markTaskAsComplete(taskId)).thenReturn(expectedResponse);
+
+        // Perform the PUT request and validate response
+        mockMvc.perform(put("/tasks/v1/complete/{taskId}", taskId))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedResponse))
+                .andExpect(jsonPath("$").value(expectedResponse));
+
+        // Verify that the service method was called with the correct taskId
+        verify(taskUpdateService).markTaskAsComplete(taskId);
+    }
+
+    @Test
+    public void givenValidTaskId_whenTaskNotFound_thenReturnTaskNotFound() throws Exception {
+        String taskId = "invalidTaskId";
+        when(taskUpdateService.markTaskAsComplete(taskId)).thenThrow(new TaskNotFoundException(taskId));
+
+        mockMvc.perform(put("/tasks/v1/complete/{taskId}", taskId))
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("TaskId [invalidTaskId] not found"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value("TaskId [invalidTaskId] not found"));    }
+
+
 }
