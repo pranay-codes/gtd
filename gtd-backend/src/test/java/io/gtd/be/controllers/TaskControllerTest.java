@@ -5,7 +5,9 @@ import io.gtd.be.domain.commands.AddTaskCommand;
 import io.gtd.be.domain.enums.Priorities;
 import io.gtd.be.domain.models.Task;
 import io.gtd.be.domain.values.task.TaskId;
+import io.gtd.be.errorHandling.exception.ServiceException;
 import io.gtd.be.errorHandling.exception.TaskNotFoundException;
+import io.gtd.be.errorHandling.exception.UserIdNotFoundException;
 import io.gtd.be.service.TaskQueryService;
 import io.gtd.be.service.TaskUpdateService;
 import io.gtd.be.utils.JsonUtil;
@@ -49,7 +51,7 @@ public class TaskControllerTest {
     @Test
     public void givenValidTaskRequest_whenAddTask_thenReturnSuccess() throws Exception {
 
-        TaskId mockId = new TaskId(UUID.randomUUID().toString());
+        var mockId = new TaskId(UUID.randomUUID().toString());
 
         when(addTaskCommandHandler.handle(any(AddTaskCommand.class)))
                 .thenReturn(mockId);
@@ -100,8 +102,8 @@ public class TaskControllerTest {
 
     @Test
     public void givenValidUserId_whenGettingTasks_thenReturnTaskList() throws Exception {
-        String userId = "userID-001";
-        Task task1 = new Task(UUID.randomUUID().toString(),
+        var userId = "userID-001";
+        var task1 = new Task(UUID.randomUUID().toString(),
                 "create task",
                 "create a task api",
                 "Dev",
@@ -109,7 +111,7 @@ public class TaskControllerTest {
                 LocalDateTime.now(),
                 "CREATED");
 
-        Task task2 = new Task(UUID.randomUUID().toString(),
+        var task2 = new Task(UUID.randomUUID().toString(),
                 "get all tasks",
                 "Retrieve a list of all tasks",
                 "Dev",
@@ -128,19 +130,63 @@ public class TaskControllerTest {
     }
 
     @Test
-    public void givenValidUserId_whenTaskQeuryReturnsEmptyList_thenReturnEmptyTaskList() throws Exception {
-        String userId = "user123";
+    public void givenValidUserId_whenTaskQueryReturnsEmptyList_thenReturnEmptyTaskList() throws Exception {
+        var userId = "user123";
         when(taskQueryService.getTasks(userId)).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/tasks/v1/{userId}", userId))
+        mockMvc.perform(get("/tasks/v1/{userId}", userId).header("test", "test123"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
+    public void givenNonExistentUserId_whenGettingTasks_thenReturnNotFoundError() throws Exception {
+        var userId = "invalidUser";
+        when(taskQueryService.getTasks(userId)).thenThrow(new UserIdNotFoundException(userId));
+
+        mockMvc.perform(get("/tasks/v1/{userId}", userId))
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("UserId [invalidUser] not found"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value("UserId [invalidUser] not found"));
+    }
+
+    @Test
+    public void givenEmptyUserId_whenGettingTasks_thenReturnBadRequestError() throws Exception {
+        var userId = " ";
+
+        mockMvc.perform(get("/tasks/v1/{userId}", userId))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Request Validation Failed"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value("400 BAD_REQUEST \"Validation failure\""));
+    }
+
+
+    @Test
+    public void givenNullUserId_whenGettingTasks_thenReturnBadRequestError() throws Exception {
+        String userId = null;
+
+        mockMvc.perform(get("/tasks/v1/{userId}", userId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenUserId_whenTaskQueryServiceReturnsError_thenReturnInternalServerError() throws Exception {
+        var userId = UUID.randomUUID().toString();
+        when(taskQueryService.getTasks(userId)).thenThrow(new ServiceException("RetrieveTasksForUserQueryHandler:: Error connecting to database"));
+
+        mockMvc.perform(get("/tasks/v1/{userId}", userId))
+                .andExpect(status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("INTERNAL_SERVER_ERROR"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Server error occurred"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value("RetrieveTasksForUserQueryHandler:: Error connecting to database"));
+    }
+
+    @Test
     public void givenValidTaskId_whenMarkTaskAsComplete_thenReturnTaskMarkedAsComplete() throws Exception {
-        String taskId = "task123";
-        String expectedResponse = "Task marked as complete";
+        var taskId = "task123";
+        var expectedResponse = "Task marked as complete";
 
         // Mocking the service response
         when(taskUpdateService.markTaskAsComplete(taskId)).thenReturn(expectedResponse);
@@ -157,14 +203,26 @@ public class TaskControllerTest {
 
     @Test
     public void givenValidTaskId_whenTaskNotFound_thenReturnTaskNotFound() throws Exception {
-        String taskId = "invalidTaskId";
+        var taskId = "invalidTaskId";
         when(taskUpdateService.markTaskAsComplete(taskId)).thenThrow(new TaskNotFoundException(taskId));
 
         mockMvc.perform(put("/tasks/v1/complete/{taskId}", taskId))
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("TaskId [invalidTaskId] not found"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value("TaskId [invalidTaskId] not found"));    }
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value("TaskId [invalidTaskId] not found"));
+    }
+
+    @Test
+    public void givenValidTaskId_whenTaskUpdateServiceThrowsError_thenReturnInternalServerError() throws Exception {
+        String taskId = "task123";
+        when(taskUpdateService.markTaskAsComplete(taskId)).thenThrow(new ServiceException("UpdateTaskStatusCommandHandler:: Error connecting to database"));
+
+        mockMvc.perform(put("/tasks/v1/complete/{taskId}", taskId))
+                .andExpect(status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("INTERNAL_SERVER_ERROR"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Server error occurred"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors").value("UpdateTaskStatusCommandHandler:: Error connecting to database"));    }
 
 
 }

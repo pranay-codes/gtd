@@ -9,6 +9,7 @@ import io.gtd.be.errorHandling.exception.TaskNotFoundException;
 import io.gtd.be.service.TaskQueryService;
 import io.gtd.be.service.TaskUpdateService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,8 @@ public class TaskController {
     }
 
     @GetMapping(path = "/v1/{userId}")
-    public ResponseEntity<List<Task>> getAllTasks(@PathVariable String userId) {
+
+    public ResponseEntity<List<Task>> getAllTasks(@PathVariable @NotBlank(message = "Invalid UserId sent") String userId) {
         return ResponseEntity.ok(this.taskQueryService.getTasks(userId));
     }
 
